@@ -1,45 +1,59 @@
-<html>
-<head>
-<script src='http://code.jquery.com/jquery-1.10.2.js' type='text/javascript'></script>
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
-<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<html ng-app="angular-friends">
+  <head>
+    <script src='http://code.jquery.com/jquery-1.10.2.js' type='text/javascript'></script>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
 
-<script src='http://code.angularjs.org/1.1.5/angular.js' type='text/javascript'></script>
-<script src='app.js' type='text/javascript'></script>
-<script src='FriendController.js' type='text/javascript'></script>
+    <script src='http://code.angularjs.org/1.1.5/angular.js' type='text/javascript'></script>
+    <script src='app.js' type='text/javascript'></script>
+    <script src='FriendController.js' type='text/javascript'></script>
 
 
 
-<link rel="stylesheet" type="text/css" href="style.css">
-<title>Facebook Lesson 18</title>
-</head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Facebook Lesson 18</title>
+  </head>
 
-<body>
+<body ng-controller="FriendController">
+
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=224957947702384";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+  </script>
+   
 
 <h1>The <strong>facebook</strong> Friend Machine</h1>
 
-<div class="friends">
+<div class="friends" >
+
 
 
 <form class="form-inline searchForm" role="form">
   <div class="form-group">
 
-  <input class="form-control" placeholder="Search Anything About Your Friends" >
+ <!-- <input class="form-control" placeholder="Search Anything About Your Friends" > -->
   <!-- The stuff below is For step 5....get rid of the one above if you wish-->
-<!--    
-    <input class="form-control" placeholder="Search Your Friends' Name" >
-    <input class="form-control" placeholder="Search Your Freinds' Location" > 
- -->
-    <select class="input-medium">
-        <option>Name</option>
-        <option># friends</option>
-        <option>City</option>
-        <option>State</option>
-        <option>Country</option>
-    </select>
-    <select class="input-medium">
+  
+  <div class="fb-login-button" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false">Login</div>
+  
+   <input class="form-control" placeholder="Search Your Friends' Name" ng-model="search.name" >
+    <input class="form-control" placeholder="Search Your Friends' Location" ng-model="search.current_location" >  
+
+    <select class="input-medium" ng-model="sortBy" ng-options="property.val as property.string for property in sortArray">
+      <option value="">Sort By</option>
+      <!--  <option value="friend_count"># friends</option>
+        <option value="current_location.city">City</option>
+        <option value="current_location.state">State</option>
+        <option value="current_location.country">Country</option> -->
+    </select> 
+    <select class="input-medium" ng-model="arrangeBy">
         <option value="false">Descending</option>
         <option value="true">Ascending</option>
     </select>
@@ -47,11 +61,14 @@
 </form>
 
   <ul>
-    <li class='friend'>
-       <img class="profile-pic" src='https://scontent-a.xx.fbcdn.net/hprofile-ash3/833_10200838803828124_1233160321_a.jpg'>
-      <h3>Cali Fornia</h3>
-      <div class="location">
-        Location: New Port Beach, California, United States
+    <li class='friend' ng-repeat="person in friends | filter:search:strict | orderBy:sortBy:arrangeBy">
+       <img class="profile-pic" src='{{person.pic_square}}'> 
+      <h3>{{person.name}}</h3>
+      <div class="location" >
+        {{person.current_location.name + " " +person.current_location.country}}
+       <!--<div ng-repeat="(key, value) in person.current_location">
+            {{key}}; {{value}};
+        </div> -->
       </div>      
       <div class="status">
         Status: I hate the snow. I wish I was on the beach right now!!! <span class="hashtag">#ihateprovo</span>
